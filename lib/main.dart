@@ -3,13 +3,21 @@ import 'package:flutter/material.dart';
 // Firebase plugins
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:recipe_book/login_page.dart';
+import 'package:recipe_book/services/auth_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(App());
 }
 
+// We are using a StatefulWidget such that we only create the [Future] once,
+// no matter how many times our widget rebuild.
+// If we used a [StatelessWidget], in the event where [App] is rebuilt, that
+// would re-initialize FlutterFire and make our application re-enter loading state,
+// which is undesired.
 class App extends StatefulWidget {
+  // Create the initialization Future outside of `build`:
   @override
   _AppState createState() => _AppState();
 }
@@ -27,65 +35,22 @@ class _AppState extends State<App> {
       builder: (context, snapshot) {
         // Check for errors
         if (snapshot.hasError) {
-          return SomethingWentWrong();
+          return Text("Something went wrong.");
         }
 
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-          return MyAwesomeApp();
+          return MaterialApp(
+            title: "My Title",
+            home: AuthService().handleAuth(),
+          );
         }
 
         // Otherwise, show something whilst waiting for initialization to complete
-        return Loading();
+        return Container(
+          child: CircularProgressIndicator(),
+        );
       },
-    );
-  }
-}
-
-class MyAwesomeApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Recipe Book",
-      home: Scaffold(
-        body: Container(
-          child: Center(
-            child: Text("Hello"),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class SomethingWentWrong extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Recipe Book",
-      home: Scaffold(
-        body: Container(
-          child: Center(
-            child: Text("Something went wrong."),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class Loading extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Recipe Book",
-      home: Scaffold(
-        body: Container(
-          child: Center(
-            child: Text("Loading..."),
-          ),
-        ),
-      ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_book/services/auth_service.dart';
+import 'package:recipe_book/signup_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -229,7 +230,13 @@ class _LoginPageState extends State<LoginPage> {
                 width: 5.0,
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) {
+                      return SignupPage();
+                    },
+                  ));
+                },
                 child: Text(
                   "Register",
                   style: TextStyle(

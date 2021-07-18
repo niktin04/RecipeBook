@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_book/services/auth_service.dart';
-import 'package:recipe_book/signup_page.dart';
+import 'package:recipe_book/pages/signup_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -195,7 +195,9 @@ class _LoginPageState extends State<LoginPage> {
             height: 20.0,
           ),
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              AuthService().signInWithGoogle();
+            },
             child: Container(
               height: 50.0,
               alignment: Alignment(1.0, 0.0),
@@ -210,7 +212,7 @@ class _LoginPageState extends State<LoginPage> {
                 elevation: 7.0,
                 child: Center(
                   child: Text(
-                    "LOGIN WIH FB",
+                    "LOGIN WIH GOOGLE",
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -231,11 +233,10 @@ class _LoginPageState extends State<LoginPage> {
               ),
               InkWell(
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) {
-                      return SignupPage();
-                    },
-                  ));
+                  Navigator.pushNamed(
+                    context,
+                    '/register',
+                  );
                 },
                 child: Text(
                   "Register",

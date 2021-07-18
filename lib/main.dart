@@ -1,21 +1,23 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Firebase plugins
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:recipe_book/login_page.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:recipe_book/pages/home_page.dart';
+import 'package:recipe_book/pages/login_page.dart';
+import 'package:recipe_book/pages/profile_page.dart';
 import 'package:recipe_book/services/auth_service.dart';
+import 'package:recipe_book/pages/signup_page.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(App());
 }
 
-// We are using a StatefulWidget such that we only create the [Future] once,
-// no matter how many times our widget rebuild.
-// If we used a [StatelessWidget], in the event where [App] is rebuilt, that
-// would re-initialize FlutterFire and make our application re-enter loading state,
-// which is undesired.
 class App extends StatefulWidget {
   // Create the initialization Future outside of `build`:
   @override
@@ -23,34 +25,25 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  // The future is part of the state of our widget.
-  // We should not call `initializeApp` directly inside [build].
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
-
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      // Initialize FlutterFire:
-      future: _initialization,
-      builder: (context, snapshot) {
-        // Check for errors
-        if (snapshot.hasError) {
-          return Text("Something went wrong.");
-        }
+    return MaterialApp(
+      title: "My Title",
+      routes: {
+        '/': (context) => AuthService().handleAuth(),
 
-        // Once complete, show your application
-        if (snapshot.connectionState == ConnectionState.done) {
-          return MaterialApp(
-            title: "My Title",
-            home: AuthService().handleAuth(),
-          );
-        }
+        '/login': (context) => LoginPage(),
+        '/register': (context) => SignupPage(),
 
-        // Otherwise, show something whilst waiting for initialization to complete
-        return Container(
-          child: CircularProgressIndicator(),
-        );
+        '/profile': (context) => ProfilePage(),
+
+        '/dash': (context) => HomePage(),
       },
+      theme: ThemeData(
+        textTheme: GoogleFonts.latoTextTheme(
+          Theme.of(context).textTheme,
+        ),
+      ),
     );
   }
 }
